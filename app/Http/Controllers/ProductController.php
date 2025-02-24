@@ -1,29 +1,24 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function foodBeverage()
+    public function showCategory($category)
     {
-        return view('products.food-beverage');
-    }
+        // validasi
+        $allowedCategory = [
+            'food-baverage',
+            'beauty-health',
+            'home-care',
+            'baby-kid'
+        ];
 
-    public function beautyHealth()
-    {
-        return view('products.beauty-health');
-    }
+        if (!in_array($category, $allowedCategory)) {
+            abort(404);
+        }
 
-    public function homeCare()
-    {
-        return view('products.home-care');
-    }
-
-    public function babyKid()
-    {
-        return view('products.baby-kid');
+        return view('products', ['category' => $category]);
     }
 }
 
