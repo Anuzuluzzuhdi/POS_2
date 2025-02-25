@@ -8,17 +8,23 @@ class ProductController extends Controller
     {
         // validasi
         $allowedCategory = [
-            'food-baverage',
+            'food-beverage',
             'beauty-health',
             'home-care',
             'baby-kid'
         ];
 
+
         if (!in_array($category, $allowedCategory)) {
             abort(404);
         }
 
-        return view('products', ['category' => $category]);
+        $product=[
+            'product 1','product 2', 'product 3', 'product 4'
+        ];
+        return view('products')
+        -> with('category',$category)
+        -> with('products',$product);
     }
 }
 

@@ -8,7 +8,7 @@ use App\Http\Controllers\PenjualanController;
 
 Route::get('/', [HomeController::class, 'index']);
 
-Route::prefix('category')->group(function () {
+Route::prefix('/category')->group(function () {
     Route::get('/{category}', [ProductController::class, 'showCategory']);
 });
 
