@@ -37,7 +37,7 @@
     
     <h2>Menu</h2>
     <ul class="menu">
-        <li><button onclick="window.location.href='/user/1/name/JohnDoe'">User Profile</button></li>
+        <li><button onclick="window.location.href='/user/1/name/Abhinaya'">User Profile</button></li>
         <li><button onclick="window.location.href='/category/food-beverage'">Food-Beverage</button></li>
         <li><button onclick="window.location.href='/category/beauty-health'">Beauty-Health</button></li>
         <li><button onclick="window.location.href='/category/home-care'">Home-Care</button></li>
