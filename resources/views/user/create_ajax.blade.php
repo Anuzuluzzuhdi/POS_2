@@ -1,0 +1,139 @@
+<form action="{{ url('/user/ajax') }}" method="POST" id="form-tambah">
+    @csrf
+    <div id="modal-master" class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Tambah Data User</h5>
+                <button type="button" class="close" data-dismiss="modal">
+                    <span>&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <!-- Level -->
+                <div class="form-group">
+                    <label>Level Pengguna</label>
+                    <select name="level_id" id="level_id" class="form-control" required>
+                        <option value="">- Pilih Level -</option>
+                        @foreach($level as $l)
+                            <option value="{{ $l->level_id }}">{{ $l->level_nama }}</option>
+                        @endforeach
+                    </select>
+                    <small id="error-level_id" class="error-text text-danger"></small>
+                </div>
+
+                <!-- Username -->
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" id="username" class="form-control" required>
+                    <small id="error-username" class="error-text text-danger"></small>
+                </div>
+
+                <!-- Nama -->
+                <div class="form-group">
+                    <label>Nama</label>
+                    <input type="text" name="nama" id="nama" class="form-control" required>
+                    <small id="error-nama" class="error-text text-danger"></small>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" id="password" class="form-control" required>
+                    <small id="error-password" class="error-text text-danger"></small>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" data-dismiss="modal" class="btn btn-warning">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan</button>
+            </div>
+        </div>
+    </div>
+</form>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+$(document).ready(function() {
+    // Pastikan form menggunakan ID yang benar
+    $("#form-tambah").on('submit', function(e) {
+        e.preventDefault(); // Ini sangat penting untuk mencegah form submission default
+        
+        var form = this;
+        
+        $.ajax({
+            url: $(form).attr('action'),
+            type: 'POST',
+            data: $(form).serialize(),
+            dataType: 'json',
+            success: function(response) {
+                if (response.status) {
+                    // Tutup modal dengan benar
+                    $('#modal-master').modal('hide');
+                    
+                    // Tampilkan SweetAlert
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Sukses',
+                        text: response.message,
+                        timer: 2000,
+                        showConfirmButton: false
+                    }).then(() => {
+                        // Reset form
+                        form.reset();
+                        $('.error-text').text('');
+                        $('.is-invalid').removeClass('is-invalid');
+                        
+                        // Reload DataTable jika ada
+                        if (typeof dataUser !== 'undefined' && $.fn.DataTable.isDataTable(dataUser)) {
+                            dataUser.ajax.reload(null, false);
+                        }
+                    });
+                } else {
+                    // Tampilkan error validasi
+                    $('.error-text').text('');
+                    $('.is-invalid').removeClass('is-invalid');
+                    
+                    $.each(response.msgField, function(field, errors) {
+                        $('#error-' + field).text(errors[0]);
+                        $('#' + field).addClass('is-invalid');
+                    });
+                    
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error Validasi',
+                        text: 'Terdapat kesalahan pada inputan'
+                    });
+                }
+            },
+            error: function(xhr) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error Server',
+                    text: 'Terjadi kesalahan: ' + xhr.statusText
+                });
+            }
+        });
+    });
+
+    // Validasi form
+    $("#form-tambah").validate({
+        rules: {
+            level_id: { required: true, number: true },
+            username: { required: true, minlength: 3, maxlength: 20 },
+            nama: { required: true, minlength: 3, maxlength: 100 },
+            password: { required: true, minlength: 6, maxlength: 20 }
+        },
+        errorElement: 'span',
+        errorPlacement: function(error, element) {
+            error.addClass('invalid-feedback');
+            element.closest('.form-group').append(error);
+        },
+        highlight: function(element) {
+            $(element).addClass('is-invalid');
+        },
+        unhighlight: function(element) {
+            $(element).removeClass('is-invalid');
+        }
+    });
+});
+</script>
