@@ -19,12 +19,15 @@ class ProductController extends Controller
             abort(404);
         }
 
-        $product=[
-            'product 1','product 2', 'product 3', 'product 4'
+        $product = [
+            'product 1',
+            'product 2',
+            'product 3',
+            'product 4'
         ];
         return view('products')
-        -> with('category',$category)
-        -> with('products',$product);
+            ->with('category', $category)
+            ->with('products', $product);
     }
 }
 
